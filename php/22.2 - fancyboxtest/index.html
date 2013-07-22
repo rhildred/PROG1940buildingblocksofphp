@@ -1,0 +1,36 @@
+<a href="#test" class="fancybox">Open</a>
+
+<div id="test" style="display:none;width:300px;">
+<p>
+Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque blandit, mi sed sollicitudin hendrerit, elit elit tristique velit, ut sagittis urna dolor non metus. Fusce viverra lacus sit amet urna porttitor eu mollis massa hendrerit.
+</p>
+</div>
+<!-- Add jQuery library -->
+<script type="text/javascript" src="http://code.jquery.com/jquery-latest.min.js"></script>
+
+<!-- Add fancyBox -->
+<link rel="stylesheet" href="fancybox/jquery.fancybox.css?v=2.1.5" type="text/css" media="screen" />
+<script type="text/javascript" src="fancybox/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+<script>
+
+function addToCart(id)
+{
+	alert("button clicked " + id);
+}
+
+jQuery(".fancybox").fancybox({
+    openEffect  : 'none',
+    closeEffect : 'none',
+    afterLoad   : function() {
+        //this.inner.prepend( '<h1>1. My custom title</h1>' );
+        this.content = this.content.html() + '<input type="text" name="qty" value="1" /><button onclick="addToCart(this.id);" id="13">add</button>';
+    }
+});
+/*
+$(document).ready(function() {
+	$(".fancybox").fancybox();
+});
+*/
+</script>
