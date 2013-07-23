@@ -2,9 +2,19 @@
 
 session_start();
 
-require_once("common.php");
+require_once("DB.php");
 
-$mysqli = getDB();
+$mysqli = new DB();
+$aMember = $mysqli->getMember($_POST["username"] );
+if($aMember == null)
+{
+	echo "Your email is not in our file. Please contact the office at nnnn to fix.";
+	return;
+}
+$currentUser = new stdClass();
+$currentUser->name = $_POST["name"];
+$currentUser->admin = $aMember["admin"];
+$currentUser->boardmember = $aMember["boardmember"];
 
 $stmt = $mysqli->prepare("INSERT INTO currentUsers(id, name, digest) VALUES(?, ?, PASSWORD(?))");
 $sDigest = $_POST["username"] . $_POST["password"];
@@ -22,8 +32,6 @@ if($stmt->affected_rows != 1)
 
 header('Location: index.php');
 
-$currentUser = new stdClass();
-$currentUser->name = $_POST["name"];
 
 $_SESSION["currentUser"] = $currentUser;
 	
