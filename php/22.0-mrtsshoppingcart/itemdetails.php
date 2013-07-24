@@ -7,7 +7,7 @@ require_once("common.php");
 
 $mysqli = getDB();
 
-$stmt = $mysqli->prepare("SELECT name, description, image, price FROM items WHERE id = ?");
+$stmt = $mysqli->prepare("SELECT id, name, description, image, price FROM items WHERE id = ?");
 
 $nItemId = 1;
 
@@ -20,7 +20,7 @@ $stmt->bind_param("d", $nItemId);
 
 $stmt->execute();
 
-$stmt->bind_results($name, $description, $image, $price);
+$stmt->bind_results($id, $name, $description, $image, $price);
 $stmt->fetch();
 
 $stmtColors = $mysqli->prepare("SELECT color FROM item_colors WHERE itemid = ?");
