@@ -2,7 +2,6 @@
 
 function getDB()
 {
-	$mysqli = new mysqli('localhost', 'root', '', 'mrts');
 	if(isset($_ENV['OPENSHIFT_MYSQL_DB_HOST']))
 	{
 		$mysqli = new mysqli($_ENV['OPENSHIFT_MYSQL_DB_HOST'], 
