@@ -8,7 +8,7 @@ class DB extends mysqli
 		{
 			parent::__construct($_ENV['OPENSHIFT_MYSQL_DB_HOST'], 
 			$_ENV['OPENSHIFT_MYSQL_DB_USERNAME'], $_ENV['OPENSHIFT_MYSQL_DB_PASSWORD'], 
-			$_ENV['OPENSHIFT_APP_NAME ']);
+			$_ENV['OPENSHIFT_GEAR_NAME ']);
 		}
 		else 
 		{
