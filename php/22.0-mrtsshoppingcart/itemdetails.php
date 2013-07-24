@@ -1,10 +1,13 @@
 <?php 
 
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
+
 require_once("../libs/common.php");
 
 $mysqli = getDB();
 
-$stmt = $mysqli->prepare("SELECT id, name, description, image, price FROM items WHERE id = ?");
+$stmt = $mysqli->prepare("SELECT name, description, image, price FROM items WHERE id = ?");
 
 $nItemId = 1;
 
@@ -16,9 +19,9 @@ if(array_key_exists("itemid", $_GET))
 $stmt->bind_param("d", $nItemId);
 
 $stmt->execute();
-$itemset = $stmt->get_result();
 
-$aItem = $itemset->fetch_assoc();
+$stmt->bind_results($name, $description, $image, $price);
+$stmt->fetch();
 
 $stmtColors = $mysqli->prepare("SELECT color FROM item_colors WHERE itemid = ?");
 $stmtColors->bind_param("d", $nItemId);
@@ -33,9 +36,9 @@ $stmtSizes->bind_param("d", $nItemId);
 <link rel="stylesheet" href="style/mrts.css" />
 </head>
 <body>
-<h1>Item Details for <?php echo $aItem["name"]?> (<?php echo $aItem["price"]?>)</h1>
-<p><?php echo $aItem["description"]?></p>
-<img alt="<?php echo $aItem["name"]?>" src="images/<?php echo $aItem["image"]?>" />
+<h1>Item Details for <?php echo $name ?> (<?php echo $price ?>)</h1>
+<p><?php echo $description ?></p>
+<img alt="<?php echo $name ?>" src="images/<?php echo $image ?>" />
 <form action="shoppingcart.php" method="post">
 <input type="hidden" name="itemid" value="<?php echo $nItemId ?>" />
 <p><label for="qty">quantity</label><br /><input name="qty" value="1" /></p>
