@@ -1,5 +1,5 @@
 <?php 
-
+error_reporting(22527);
 session_start();
 
 require_once("DB.php");
