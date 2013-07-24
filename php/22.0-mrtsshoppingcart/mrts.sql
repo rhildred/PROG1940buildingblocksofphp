@@ -26,6 +26,8 @@ SET time_zone = "+00:00";
 -- Table structure for table `categories`
 --
 
+USE morebuildingblocksofphp;
+
 CREATE TABLE IF NOT EXISTS `categories` (
   `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'artificial id for the categories',
   `name` varchar(45) NOT NULL COMMENT 'name of the category',

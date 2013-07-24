@@ -1,10 +1,12 @@
 <?php 
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
 
-require_once("../libs/common.php");
+require_once("common.php");
 
 $mysqli = getDB();
 
-$stmt = $mysqli->prepare("SELECT id, name, description, price FROM items WHERE categoryid = ?");
+$stmt = $mysqli->prepare("SELECT id, name, price FROM items WHERE categoryid = ?");
 
 $nCategory = 1;
 
@@ -46,14 +48,14 @@ else
 	if($row["id"] == $nCategory)
 	{
 		$stmt->execute();
-		$itemset = $stmt->get_result();
-		while($itemRow = $itemset->fetch_assoc())
+		$stmt->bind_result($id, $name, $price);
+		while($stmt->fetch())
 		{
 			?>
 		<p>
-			<a href="itemdetails.php?itemid=<?php echo $itemRow["id"]?>"><?php echo $itemRow["name"]?></a>
+			<a href="itemdetails.php?itemid=<?php echo $id ?>"><?php echo $name ?></a>
 			(
-			<?php echo $itemRow["price"]?>
+			<?php echo $price ?>
 			)
 		</p>
 		<?php 
