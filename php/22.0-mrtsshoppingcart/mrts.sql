@@ -167,6 +167,7 @@ CREATE TABLE IF NOT EXISTS `orders` (
   `stateprovince` varchar(45) NOT NULL COMMENT 'from the shipping form',
   `postcode` varchar(45) NOT NULL COMMENT 'from the shipping form',
   `specialinstructions` varchar(45) DEFAULT NULL COMMENT 'from the shipping form',
+  `totalprice` decimal(10,2) NOT NULL COMMENT 'the total price of the order',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='the tshirt orders from our website' AUTO_INCREMENT=1 ;
 

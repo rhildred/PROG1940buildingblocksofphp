@@ -7,8 +7,6 @@ require_once("common.php");
 
 $mysqli = getDB();
 
-$stmt = $mysqli->prepare("SELECT id, name, description, image, price FROM items WHERE id = ?");
-
 $nItemId = 1;
 
 if(array_key_exists("itemid", $_GET))
@@ -16,18 +14,20 @@ if(array_key_exists("itemid", $_GET))
 	$nItemId = $_GET["itemid"];
 }
 
-$stmt->bind_param("d", $nItemId);
-
-$stmt->execute();
-
-$stmt->bind_results($id, $name, $description, $image, $price);
-$stmt->fetch();
 
 $stmtColors = $mysqli->prepare("SELECT color FROM item_colors WHERE itemid = ?");
 $stmtColors->bind_param("d", $nItemId);
 
 $stmtSizes = $mysqli->prepare("SELECT size FROM item_sizes WHERE itemid = ?");
 $stmtSizes->bind_param("d", $nItemId);
+
+$stmt = $mysqli->prepare("SELECT name, description, image, price FROM items WHERE id = ?");
+$stmt->bind_param("d", $nItemId);
+$stmt->execute();
+$stmt->store_result();
+$stmt->bind_result($name, $description, $image, $price);
+$stmt->fetch();
+
 
 ?>
 <!Doctype html> 
@@ -45,11 +45,12 @@ $stmtSizes->bind_param("d", $nItemId);
 <input type="submit" value="Add To Cart" />
 <?php 
 	$stmtColors->execute();
-	$colorsset = $stmtColors->get_result();
-	if($colorsset->num_rows == 1)
+	$stmtColors->store_result();
+	$stmtColors->bind_result($color);
+	if($stmtColors->num_rows == 1)
 	{
-		$aColor = $colorsset->fetch_assoc();
-		echo "<p>This item comes in any color so long as it is ", $aColor["color"], "</p>"; 
+		$stmtColors->fetch();
+		echo "<p>This item comes in any color so long as it is ", $color, "</p>"; 
 	}
 	else
 	{?>
@@ -57,21 +58,22 @@ $stmtSizes->bind_param("d", $nItemId);
 		<legend>color</legend>
 		<?php 
 		
-		while($aColor = $colorsset->fetch_assoc())
+		while($stmtColors->fetch())
 		{
-			echo "<p><input type=\"radio\" name=\"color\" value=\"", $aColor["color"], "\"/>";
-			echo $aColor["color"], "</p>";
+			echo "<p><input type=\"radio\" name=\"color\" value=\"", $color, "\"/>";
+			echo $color, "</p>";
 		}
 		
 		?>
 		</fieldset>
 <?php }
 	$stmtSizes->execute();
-	$sizesset = $stmtSizes->get_result();
-	if($sizesset->num_rows == 1)
+	$stmtSizes->store_result();
+	$stmtSizes->bind_result($size);
+	if($stmtSizes->num_rows == 1)
 	{
-		$aSize = $sizesset->fetch_assoc();
-		echo "<p>", $aSize["size"], "</p>";
+		$stmtSizes->fetch();
+		echo "<p>", $size, "</p>";
 	}
 	else
 	{?>
@@ -79,10 +81,10 @@ $stmtSizes->bind_param("d", $nItemId);
 		<legend>size</legend>
 		<?php 
 		
-		while($aSize = $sizesset->fetch_assoc())
+		while($stmtSizes->fetch())
 		{
-			echo "<p><input type=\"radio\" name=\"size\" value=\"", $aSize["size"], "\"/>";
-			echo $aSize["size"], "</p>";
+			echo "<p><input type=\"radio\" name=\"size\" value=\"", $size, "\"/>";
+			echo $size, "</p>";
 		}
 		
 		?>

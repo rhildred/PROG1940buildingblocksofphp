@@ -1,32 +1,41 @@
 <?php 
 
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
 session_start();
 
 if(count($_POST) > 0)
 {
-	if(!array_key_exists("shoppingcart", $_SESSION))
+	if(isset($_POST["action"]))
 	{
-		$_SESSION["shoppingcart"] = array();
+		unset($_SESSION["shoppingcart"][$_POST["item"]]);
 	}
-	$item = new stdClass();
-	$item->id = $_POST["itemid"];
-	$item->qty = $_POST["qty"];
-	if(array_key_exists("color", $_POST))
+	else
 	{
-		$item->color = $_POST["color"];
+		if(!array_key_exists("shoppingcart", $_SESSION))
+		{
+			$_SESSION["shoppingcart"] = array();
+		}
+		$item = new stdClass();
+		$item->id = $_POST["itemid"];
+		$item->qty = $_POST["qty"];
+		if(array_key_exists("color", $_POST))
+		{
+			$item->color = $_POST["color"];
+		}
+		if(array_key_exists("size", $_POST))
+		{
+			$item->size = $_POST["size"];
+		}
+		array_push($_SESSION["shoppingcart"], $item);
 	}
-	if(array_key_exists("size", $_POST))
-	{
-		$item->size = $_POST["size"];
-	}
-	array_push($_SESSION["shoppingcart"], $item);
 }
 
-require_once("../libs/common.php");
+require_once("common.php");
 
 $mysqli = getDB();
 
-$stmt = $mysqli->prepare("SELECT id, name, description, image, price FROM items WHERE id = ?");
+$stmt = $mysqli->prepare("SELECT name, price FROM items WHERE id = ?");
 ?>
 <!Doctype html>
 <html>
@@ -44,16 +53,17 @@ $stmt = $mysqli->prepare("SELECT id, name, description, image, price FROM items 
 <?php 
 
 $nTotalCost = 0; // the cost that will go at the bottom of the shopping cart
-foreach($_SESSION["shoppingcart"] as $item)
+foreach($_SESSION["shoppingcart"] as $n=>$item)
 {
 	$stmt->bind_param("d", $item->id);
 
 	$stmt->execute();
-	$itemset = $stmt->get_result();
-
-	$aItem = $itemset->fetch_assoc();
+	$stmt->store_result();
+	$stmt->bind_result($name, $price);
 	
-	$nLineCost = $aItem["price"] * $item->qty;
+	$stmt->fetch();
+	
+	$nLineCost = $price * $item->qty;
 	
 	$nTotalCost += $nLineCost;
 	
@@ -61,7 +71,7 @@ foreach($_SESSION["shoppingcart"] as $item)
 	
 	<tr>
 	
-	<td><?php echo $aItem["name"]?></td>
+	<td><?php echo $name ?></td>
 	
 	<td><?php 
 	
@@ -81,14 +91,19 @@ foreach($_SESSION["shoppingcart"] as $item)
 	
 	?></td>
 	
-	<td><?php echo $aItem["price"]?></td>
+	<td><?php echo $price ?></td>
 	
 	<td><?php echo $item->qty ?></td>
 
 	<td><?php echo $nLineCost ?></td>
 	
-	<td><button id="<?php echo $item->id?>">remove item</button>
-	
+	<td>
+	<form action="" method="post" >
+	<input type="hidden" name="action" value="remove" />
+	<input type="hidden" name="item" value="<?php echo $n ?>" />
+	<button>remove item</button>
+	</form>
+	</td>
 	</tr>
 	
 	<?php

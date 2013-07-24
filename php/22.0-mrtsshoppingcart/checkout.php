@@ -1,8 +1,10 @@
 <?php 
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
 
 session_start();
 
-require_once("../libs/common.php");
+require_once("common.php");
 
 $mysqli = getDB();
 
@@ -10,7 +12,7 @@ $mysqli = getDB();
 // actually insert order into database
 
 
-$stmt = $mysqli->prepare("SELECT id, name, description, image, price FROM items WHERE id = ?");
+$stmt = $mysqli->prepare("SELECT name, price FROM items WHERE id = ?");
 
 $aOrderItems = array();
 
@@ -20,11 +22,12 @@ foreach($_SESSION["shoppingcart"] as $item)
 	$stmt->bind_param("d", $item->id);
 
 	$stmt->execute();
-	$itemset = $stmt->get_result();
-
-	$aItem = $itemset->fetch_assoc();
-
-	$nLineCost = $aItem["price"] * $item->qty;
+	$stmt->store_result();
+	$stmt->bind_result($name, $price);
+	
+	$stmt->fetch();
+	
+	$nLineCost = $price * $item->qty;
 
 	$nTotalCost += $nLineCost;
 	
@@ -32,7 +35,7 @@ foreach($_SESSION["shoppingcart"] as $item)
 	
 	$orderItem->id = $item->id;
 	
-	$orderItem->price = $aItem["price"];
+	$orderItem->price = $price;
 	
 	$orderItem->qty = $item->qty;
 	
@@ -47,15 +50,10 @@ foreach($_SESSION["shoppingcart"] as $item)
 		$orderItem->size = $item->size;
 	}
 
-	$orderItem->name = $aItem["name"];
+	$orderItem->name = $name;
 	
 	array_push($aOrderItems, $orderItem);
-	
 }
-
-// clear out shopping cart
-
-$_SESSION["shoppingcart"] = array();
 
 // compile statement
 
@@ -67,11 +65,14 @@ $stmtInsert = $mysqli->prepare($sSQL);
 $stmtInsert->bind_param("sssssssd", $_POST["customername"], $_POST["address1"], $_POST["address2"], $_POST["city"],
 		$_POST["stateprovince"], $_POST["postcode"], $_POST["specialinstructions"], $nTotalCost);
 
+$mysqli->autocommit(false);
 $stmtInsert->execute();
 
 if($stmtInsert->affected_rows != 1)
 {
 	print_r($stmtInsert);
+	$mysqli->rollback();
+	return;
 }
 
 
@@ -89,9 +90,16 @@ foreach ($aOrderItems as $orderItem)
 	if($stmtItem->affected_rows != 1)
 	{
 		print_r($stmtItem);
+		$mysqli->rollback();
+		return;
 	}
 	
 }
+
+$mysqli->commit();
+// clear out shopping cart
+
+$_SESSION["shoppingcart"] = array();
 
 
 ?>
