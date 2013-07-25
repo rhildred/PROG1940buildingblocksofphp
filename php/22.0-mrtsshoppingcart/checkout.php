@@ -80,7 +80,7 @@ $nOrderId = $mysqli->insert_id;
 
 // now we have inserted the order lets do order items
 
-$stmtItem = $mysqli->prepare("INSERT INTO order_items (id, order_id, color, size, qty, price) VALUES(?,?,?,?,?,?)");
+$stmtItem = $mysqli->prepare("INSERT INTO order_items (item_id, order_id, color, size, qty, price) VALUES(?,?,?,?,?,?)");
 
 foreach ($aOrderItems as $orderItem)
 {
