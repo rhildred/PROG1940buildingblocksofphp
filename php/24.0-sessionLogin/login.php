@@ -13,20 +13,21 @@ $stmt->bind_param("ss", $_POST["username"], $sDigest);
 
 $stmt->execute();
 
-$userset = $stmt->get_result();
-if($userset->num_rows != 1)
+$stmt->store_result();
+if($stmt->num_rows != 1)
 {
 	
 	print_r($stmt);
 	return;
 }
 
-$aUser = $userset->fetch_assoc();
+$stmt->bind_result($name);
+$stmt->fetch();
 
 header('Location: index.php');
 
 $currentUser = new stdClass();
-$currentUser->name = $aUser["name"];
+$currentUser->name = $name;
 
 $_SESSION["currentUser"] = $currentUser;
 	
