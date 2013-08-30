@@ -1,0 +1,20 @@
+body {
+  padding-top: 50px;
+}
+.starter-template {
+  padding: 40px 15px;
+  text-align: center;
+}
+
+.navbar-inverse p {
+	text-shadow: 0 -1px 0 rgba(0,0,0,0.25);
+	color: #999;
+	padding-left: 2em;
+	padding-top: .5em;
+}
+
+div.calendar a[href$="calendar.php"],
+div.index a[href$="."]
+{
+	color: white;
+}

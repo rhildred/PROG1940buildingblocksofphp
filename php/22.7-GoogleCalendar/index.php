@@ -1,10 +1,13 @@
 <?php 
 
-if(!isset($layout))
+if(!isset($title))
 {
-	$layout = '_layout.php';
-	$title = 'Kiss Me';
-	include($layout);
+	$title = 'Specification By Example';
+	$keywords = "test, testing, acceptance, specification, example";
+	$description = "A simple page on specification by example that uses the bootstrap " .
+			"framework, a google calendar and a contact form";
+	$project = 'Specification By Example';
+	include('_layout.php');
 	return;
 }
 
