@@ -14,5 +14,5 @@ if(!isset($title))
 
 ?>
 <div>
-this won't be displayed at first
+This is the index
 </div>

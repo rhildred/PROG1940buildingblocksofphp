@@ -3,7 +3,7 @@ body {
 }
 .starter-template {
   padding: 40px 15px;
-  text-align: center;
+/*  text-align: center;*/
 }
 
 .navbar-inverse p {
@@ -13,6 +13,7 @@ body {
 	padding-top: .5em;
 }
 
+div.contact a[href$="contact.php"],
 div.calendar a[href$="calendar.php"],
 div.index a[href$="."]
 {
