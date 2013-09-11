@@ -1,6 +1,6 @@
 <?php 
 
-require_once 'googleCreds.php';
+require_once '../../../data/googleCreds.php';
 
 class Oauth2
 {

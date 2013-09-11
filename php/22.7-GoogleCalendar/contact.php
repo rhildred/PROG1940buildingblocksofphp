@@ -17,9 +17,10 @@ elseif($_SERVER['REQUEST_METHOD'] == 'POST')
 	// Include the Mail package
 	set_include_path("../../libs" . PATH_SEPARATOR . get_include_path());
 	require "Mail.php";
+	require "../../../data/googleCreds.php";
 
 	// Identify the sender, recipient, mail subject, and body
-	$sender    = "your gmail account";
+	$sender    = YOUREMAIL;
 	$recipient = $sender;
 	$subject   = $_POST["subject"];
 	$body      = "Message from " . $_POST["email"] . "\n" . $_POST["message"];
@@ -27,7 +28,7 @@ elseif($_SERVER['REQUEST_METHOD'] == 'POST')
 	// Identify the mail server, username, password, and port
 	$server   = "ssl://smtp.gmail.com";
 	$username = $sender;
-	$password = "your gmail password";
+	$password = YOURPASSWORD;
 
 	// Set up the mail headers
 	$headers = array(
