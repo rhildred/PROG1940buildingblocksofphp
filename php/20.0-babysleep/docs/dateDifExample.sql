@@ -1,0 +1,1 @@
+SELECT DATEDIFF(NOW(), sleepstarttime) FROM babysleeps;'

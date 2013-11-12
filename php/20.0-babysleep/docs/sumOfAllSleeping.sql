@@ -1,0 +1,1 @@
+SELECT SUM(sleepduration) FROM babysleeps WHERE DATEDIFF(NOW(), sleepstarttime) < 8;
